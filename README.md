@@ -28,20 +28,28 @@ RegisterNumber: 212225040011
 ```
 ```
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 # -----------------------
-# Data
+# Load dataset
 # -----------------------
-x = np.array([1, 2, 3, 4, 5], dtype=float)
-y = np.array([2, 4, 6, 8, 10], dtype=float)
+data = pd.read_csv("ex3.csv")
+
+x = data["R&D Spend"].values
+y = data["Profit"].values
+
+# -----------------------
+# Feature Scaling (IMPORTANT)
+# -----------------------
+x = (x - np.mean(x)) / np.std(x)
 
 # -----------------------
 # Parameters
 # -----------------------
-w = 0.0
-b = 0.0
-alpha = 0.01
+w = 0.0          # weight
+b = 0.0          # bias
+alpha = 0.01     # learning rate
 epochs = 100
 n = len(x)
 
@@ -50,50 +58,55 @@ losses = []
 # -----------------------
 # Gradient Descent
 # -----------------------
-for _ in range(epochs):
+for i in range(epochs):
+    # Prediction
     y_hat = w * x + b
 
-    # Mean Squared Error
+    # Loss (MSE)
     loss = np.mean((y_hat - y) ** 2)
     losses.append(loss)
 
+    # Gradients
     dw = (2/n) * np.sum((y_hat - y) * x)
     db = (2/n) * np.sum(y_hat - y)
 
-    w -= alpha * dw
-    b -= alpha * db
+    # Update parameters
+    w = w - alpha * dw
+    b = b - alpha * db
 
 # -----------------------
 # Plots
 # -----------------------
 plt.figure(figsize=(12, 5))
 
-# 1️⃣ Loss vs Iterations
+# Loss vs Iterations
 plt.subplot(1, 2, 1)
-plt.plot(losses, color="blue")
+plt.plot(losses)
 plt.xlabel("Iterations")
 plt.ylabel("Loss (MSE)")
 plt.title("Loss vs Iterations")
 
-# 2️⃣ Regression Line
+# Regression Line
 plt.subplot(1, 2, 2)
-plt.scatter(x, y, color="red", label="Data")
-plt.plot(x, w * x + b, color="green", label="Regression Line")
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title("Linear Regression Fit")
+plt.scatter(x, y, label="Data")
+plt.plot(x, w * x + b, label="Regression Line")
+plt.xlabel("R&D Spend (scaled)")
+plt.ylabel("Profit")
+plt.title("Linear Regression using Gradient Descent")
 plt.legend()
 
 plt.tight_layout()
 plt.show()
 
-print("Final weight (w):", w)
-print("Final bias (b):", b)
+# -----------------------
+# Final Parameters
+# -----------------------
+print("Final Weight (w):", w)
+print("Final Bias (b):", b)
 ```
 
 ## Output:
-<img width="1378" height="584" alt="ML-EX-3" src="https://github.com/user-attachments/assets/2860376a-f168-4b28-9104-a9f9b56eaff1" />
-
+<img width="1378" height="584" alt="ML-EX-3" src="https://github.com/user-attachments/assets/e6c3b05a-130b-48f4-813d-f195c00cf28d" />
 
 
 ## Result:
